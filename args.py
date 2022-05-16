@@ -3,9 +3,9 @@ import argparse
 
 def parse_args():
     parser = argparse.ArgumentParser(
-        description="""VPNROULETTE CLIENT""",
+        description="""AWS EBS LIFECYCLE""",
         add_help=True,
-        prog="vpnroulette"
+        prog="aws ebs lifecycle"
     )
     parser.add_argument(
         "-l",
