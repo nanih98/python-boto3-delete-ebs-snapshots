@@ -15,7 +15,7 @@ $ python3 clean_ebs_snapshots.py -a 30 -r eu-west-1 -i XXXXX -l INFO -d true
 
 ## Parameters
 
-* **-a:** max age of the snapshot
+* **-a:** max age of the snapshot (default: 30 days)
 * **-r:** aws region
 * **-i:** aws account id
 * **-l:** level info (default INFO)

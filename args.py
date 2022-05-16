@@ -20,7 +20,8 @@ def parse_args():
     parser.add_argument(
         "-a",
         "--age",
-        required=True,
+        required=False,
+        default=30,
         dest="age",
         help="""Age of the snapshot""",
         type=int,
