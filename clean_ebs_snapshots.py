@@ -28,29 +28,29 @@ class SnapshotLifecycle():
                 self.log.debug(f"{snapshot_id} will not be delete since is not older than 30 days ago")
         self.log.info(f"Snapshots to delete: {len(snapshots_to_delete)}")
     
-    def delete_snapshots(self, dry_run, snapshot):
+    def delete_snapshots(self, client, dry_run, snapshot):
         try:
             if dry_run:
                 self.log.info(f"Deleting {snapshot}")
             else:
-                self.log.info(f"Deleting snapshot de verdad {snapshot}")
-                #client.delete_snapshot(SnapshotId=snapshot_id)
-        except:
-            print(f"Can't delete {snapshot}")
+                self.log.info(f"Snapshot {snapshot} deleted")
+                client.delete_snapshot(SnapshotId=snapshot)
+        except Exception as e:
+            self.log.warn(f"{e}")
         
 
 def main():
     start = time.perf_counter()
-    log = Logger(log_level="INFO")
     args = parse_args()
+    log = Logger(log_level=args.log_level)
     client = boto3.client('ec2', region_name=args.aws_region)
     snapshots = client.describe_snapshots(OwnerIds=[args.aws_account_id])
 
     app = SnapshotLifecycle(log_level=args.log_level)
     app.get_snapshots(snapshots,args.age)
     
-    with ThreadPoolExecutor(max_workers=13) as executor:
-        futures = [executor.submit(app.delete_snapshots, args.dry_run, snapshot) for snapshot in snapshots_to_delete]
+    with ThreadPoolExecutor(max_workers=5) as executor:
+        futures = [executor.submit(app.delete_snapshots, client, args.dry_run, snapshot) for snapshot in snapshots_to_delete]
         for future in as_completed(futures):
             if future.result() is not None:
                 log.info(f"{future.result()}")
