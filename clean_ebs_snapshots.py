@@ -31,7 +31,7 @@ class SnapshotLifecycle():
     def delete_snapshots(self, client, dry_run, snapshot):
         try:
             if dry_run:
-                self.log.info(f"Deleting {snapshot}")
+                self.log.info(f"Dry run: deleting {snapshot}")
             else:
                 self.log.info(f"Snapshot {snapshot} deleted")
                 client.delete_snapshot(SnapshotId=snapshot)
