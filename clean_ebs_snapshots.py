@@ -25,7 +25,7 @@ class SnapshotLifecycle():
             if day_old > age:
                 snapshots_to_delete.append(snapshot_id)
             else:
-                self.log.debug(f"{snapshot_id} will not be delete since is not older than 30 days ago")
+                self.log.debug(f"{snapshot_id} will not be delete since is not older than {age} days ago")
         self.log.info(f"Snapshots to delete: {len(snapshots_to_delete)}")
     
     def delete_snapshots(self, client, dry_run, snapshot):
