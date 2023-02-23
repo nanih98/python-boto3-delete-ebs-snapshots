@@ -44,7 +44,17 @@ def main():
     args = parse_args()
     log = Logger(log_level=args.log_level)
     client = boto3.client('ec2', region_name=args.aws_region)
-    snapshots = client.describe_snapshots(OwnerIds=[args.aws_account_id])
+
+    log.info("Starting EBS snapshot deletion...")
+
+    # Input some filters, by the moment tag filter
+    filter_name = str(input("Enter filter name, for example, tag:myTag: "))
+    filter_value = str(input("Enter filter value: "))
+
+    snapshots = client.describe_snapshots(
+        OwnerIds=[args.aws_account_id],
+        Filters=[{'Name': filter_name, 'Values': [filter_value]}]
+    )
 
     app = SnapshotLifecycle(log_level=args.log_level)
     app.get_snapshots(snapshots,args.age)
@@ -58,6 +68,7 @@ def main():
     finish = time.perf_counter()
 
     log.info(f"Finished in {round(finish - start, 2)} second(s)")
+
 
 if __name__ == "__main__":
     main()
